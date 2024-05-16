@@ -1,0 +1,72 @@
+﻿@model IEnumerable<ProjectJournalist.Models.Journal>
+
+
+@using Microsoft.AspNetCore.Http
+
+@{
+    ViewData["Title"] = "Index";
+    int? sessionUserId = ViewBag.SessionUserId as int?;
+}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">My Journals</h1>
+</div>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            @* <th>
+            @Html.DisplayNameFor(model => model.URL)
+            </th> *@
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                @* <td>
+            @Html.DisplayFor(modelItem => item.URL)
+            </td> *@
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserId)
+                </td>
+                <td>
+                    @if (sessionUserId.HasValue && sessionUserId != item.UserId)
+                    {
+                        <!-- Mostrar el botón de suscripción solo si el usuario autenticado no es el creador del diario -->
+                        <a asp-action="Subscribe" asp-route-journalId="@item.Id">Subscribe</a>
+                    }
+                    @if (!(sessionUserId.HasValue && sessionUserId != item.UserId))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> <span>|</span>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a><span>|</span>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+
+                    }
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
